@@ -1,32 +1,15 @@
 ```
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
-venv/
 env/
-ENV/
+venv/
 .venv/
-.env/
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Django
 *.log
@@ -34,11 +17,12 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# IDE
+# Editor/IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.tmp
 
 # OS
 .DS_Store
@@ -48,44 +32,4 @@ Thumbs.db
 .env
 .env.local
 *.env.*
-
-# Coverage
-.coverage
-htmlcov/
-coverage/
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Pytest
-.pytest_cache/
-
-# Mypy
-.mypy_cache/
-
-# Git
-.git/
-
-# Temporary files
-*.tmp
-*.temp
-*~
 ```

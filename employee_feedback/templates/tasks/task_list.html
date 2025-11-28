@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Задания{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Список заданий</h2>
+    {% if user.role in 'moderator','super_moderator' %}
+        <div>
+            <a href="{% url 'tasks:create_task' %}" class="btn btn-primary">Создать задачу</a>
+            <a href="{% url 'tasks:create_photo_report_task' %}" class="btn btn-secondary">Создать фотоотчет</a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Filters -->
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <select name="status" class="form-select">
+                <option value="">Все статусы</option>
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Ожидает</option>
+                <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>В процессе</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Выполнено</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select name="employee" class="form-select">
+                <option value="">Все сотрудники</option>
+                {% for emp in employees %}
+                    <option value="{{ emp.id }}" {% if request.GET.employee == emp.id|slugify %}selected{% endif %}>
+                        {{ emp.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-outline-secondary">Фильтр</button>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    {% for task in tasks %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ task.title }}</h5>
+                    <p class="card-text">{{ task.description|truncatewords:20 }}</p>
+                    <p class="text-muted">
+                        <small>
+                            Тип: {{ task.get_task_type_display }}<br>
+                            Статус: {{ task.get_status_display }}<br>
+                            Создано: {{ task.created_at|date:"d.m.Y" }}
+                        </small>
+                    </p>
+                    <a href="{% url 'tasks:task_detail' task.id %}" class="btn btn-primary">Детали</a>
+                    {% if user.role == 'employee' and task.status != 'completed' %}
+                        <a href="{% url 'tasks:execute_task' task.id %}" class="btn btn-success">Выполнить</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p>Нет доступных заданий.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Выполнить задачу{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Выполнить задачу: {{ task.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ task.description }}</p>
+                
+                {% if task.task_type == 'survey' and questions %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% for question in questions %}
+                            <div class="mb-4">
+                                <h5>{{ question.question_text }}</h5>
+                                
+                                {% if question.question_type == 'text' %}
+                                    <textarea name="question_{{ question.id }}_text" class="form-control" rows="3" required></textarea>
+                                
+                                {% elif question.question_type == 'single_choice' %}
+                                    {% for choice in question.choices.all %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="question_{{ question.id }}_choice" id="choice_{{ choice.id }}" value="{{ choice.id }}" required>
+                                            <label class="form-check-label" for="choice_{{ choice.id }}">{{ choice.choice_text }}</label>
+                                        </div>
+                                    {% endfor %}
+                                
+                                {% elif question.question_type == 'multiple_choice' %}
+                                    {% for choice in question.choices.all %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="question_{{ question.id }}_choice" id="choice_{{ choice.id }}" value="{{ choice.id }}">
+                                            <label class="form-check-label" for="choice_{{ choice.id }}">{{ choice.choice_text }}</label>
+                                        </div>
+                                    {% endfor %}
+                                
+                                {% elif question.question_type == 'photo' %}
+                                    <input type="file" name="question_{{ question.id }}_photo" class="form-control" accept="image/*" required>
+                                
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        <button type="submit" class="btn btn-success">Отправить ответы</button>
+                    </form>
+                {% else %}
+                    <p>Эта задача не требует специфических действий. Нажмите кнопку завершения ниже.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Завершить задачу</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

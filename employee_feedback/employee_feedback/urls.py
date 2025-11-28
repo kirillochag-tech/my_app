@@ -18,8 +18,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
+
+
+def home(request):
+    """Redirect to login page or task list if authenticated"""
+    if request.user.is_authenticated:
+        return redirect('tasks:task_list')
+    else:
+        return redirect('accounts:login')
+
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('tasks/', include('tasks.urls')),

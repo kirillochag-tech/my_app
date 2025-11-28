@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Результаты задачи{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Результаты задачи: {{ task.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ task.description }}</p>
+                
+                <h4>Назначенные сотрудники:</h4>
+                <ul class="list-group mb-3">
+                    {% for emp in task.assigned_employees.all %}
+                        <li class="list-group-item">
+                            {{ emp.username }}
+                            {% if task.taskassignment_set.filter(employee=emp).first %}
+                                - 
+                                {% if task.taskassignment_set.filter(employee=emp).first.status == 'completed' %}
+                                    <span class="badge bg-success">Выполнено</span>
+                                {% else %}
+                                    <span class="badge bg-warning">В процессе</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge bg-secondary">Не начато</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                <a href="{% url 'tasks:task_detail' task.id %}" class="btn btn-primary">Назад к задаче</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

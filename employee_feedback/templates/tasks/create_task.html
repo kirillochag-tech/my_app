@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Создать задачу{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Создать задачу</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">Название</label>
+                        <input type="text" class="form-control" id="{{ form.title.id_for_label }}" name="{{ form.title.name }}" value="{{ form.title.value|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Описание</label>
+                        <textarea class="form-control" id="{{ form.description.id_for_label }}" name="{{ form.description.name }}" rows="3" required>{{ form.description.value|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.task_type.id_for_label }}" class="form-label">Тип задачи</label>
+                        <select class="form-select" id="{{ form.task_type.id_for_label }}" name="{{ form.task_type.name }}">
+                            {% for value, display in form.fields.task_type.choices %}
+                                <option value="{{ value }}" {% if form.task_type.value == value %}selected{% endif %}>{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.assigned_employees.id_for_label }}" class="form-label">Назначить сотрудникам</label>
+                        <select class="form-select" id="{{ form.assigned_employees.id_for_label }}" name="{{ form.assigned_employees.name }}" multiple>
+                            {% for choice in form.fields.assigned_employees.queryset %}
+                                <option value="{{ choice.id }}" {% if choice.id in form.assigned_employees.value %}selected{% endif %}>{{ choice.username }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких сотрудников</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.assigned_employee_groups.id_for_label }}" class="form-label">Назначить группам</label>
+                        <select class="form-select" id="{{ form.assigned_employee_groups.id_for_label }}" name="{{ form.assigned_employee_groups.name }}" multiple>
+                            {% for choice in form.fields.assigned_employee_groups.queryset %}
+                                <option value="{{ choice.id }}" {% if choice.id in form.assigned_employee_groups.value %}selected{% endif %}>{{ choice.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких групп</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Создать задачу</button>
+                    <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
